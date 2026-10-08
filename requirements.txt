@@ -1,0 +1,5 @@
+nbstripout
+jupyter
+ipykernel
+ipywidgets
+tdqm
