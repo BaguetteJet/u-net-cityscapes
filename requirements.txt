@@ -2,4 +2,4 @@ nbstripout
 jupyter
 ipykernel
 ipywidgets
-tdqm
+tqdm
