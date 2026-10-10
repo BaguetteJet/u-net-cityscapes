@@ -1,6 +1,10 @@
-# venv
+# python
+__pycache__/
 .venv
 
 # data
 data/
 *.zip
+
+# models
+models/
