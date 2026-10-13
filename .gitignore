@@ -5,6 +5,7 @@ __pycache__/
 # data
 data/
 *.zip
+eda/
 
 # models
 models/
