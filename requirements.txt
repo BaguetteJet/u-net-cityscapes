@@ -3,8 +3,10 @@ jupyter
 ipykernel
 ipywidgets
 tqdm
+pandas
 numpy
 torch
 torchvision
 matplotlib
+seaborn
 cityscapesscripts

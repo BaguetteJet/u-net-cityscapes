@@ -18,7 +18,7 @@ Install requirements
 pip install -r requirements.txt
 ```
 
-Local Git configuration to remove `.ipynb` outputs from commits
+Local Git configuration to remove `.ipynb` notebook outputs from commits
 ```bash
 nbstripout --install
 ```
@@ -35,8 +35,10 @@ data/
 ├──gtFine_trainvaltest/   
 └──leftImg8bit_trainvaltest/    
 
-Run [prepare-data.ipynb](/prepare-data.ipynb) notebook to generate dataset
+Run [1-dataset-creation.ipynb](/notebooks/1-dataset-creation.ipynb) notebook to generate dataset
+
+Optionally run [2-exploratory-data-analysis.ipynb](/notebooks/2-exploratory-data-analysis.ipynb) to analyse dataset
 
 ## 3. Train Model
 
-Run [notebook.ipynb](/notebook.ipynb) notebook
+Run [3-model-training.ipynb](/notebooks/3-model-training.ipynb) notebook

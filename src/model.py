@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-N_CLASSES = 19
+NUM_CLASSES = 19
 
 # U-Net implementation based on kerrgarr's model
 # Source: https://github.com/kerrgarr/SemanticSegmentationCityscapes/blob/main/seg_code/models.py
@@ -77,7 +77,7 @@ class OutConv(torch.nn.Module):
 
 # 
 class UNet(torch.nn.Module):
-    def __init__(self, in_channels=3, num_classes=N_CLASSES, bilinear=False, base=32):
+    def __init__(self, in_channels=3, num_classes=NUM_CLASSES, bilinear=False, base=32):
         super(UNet, self).__init__()
         self.in_channels = in_channels
         self.num_classes = num_classes
