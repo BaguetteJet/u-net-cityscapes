@@ -1,5 +1,8 @@
+import torch
 import numpy as np
+from pathlib import Path
 from PIL import Image
+import imageio.v2 as imageio
 from cityscapesscripts.helpers.labels import labels
 
 # Official Cityscapes benchmark uses 19 classes for evaluation, remaining classes are ignored
@@ -27,3 +30,27 @@ def printlabels():
 # fails if in notebook so put here
 def mask_to_long_tensor(x):
     return x.squeeze(0).long()
+
+# save png of prediciton
+def save_prediction(model, image, epoch, output_dir, device):
+    model.eval()
+
+    with torch.no_grad():
+        pred = model(image.unsqueeze(0).to(device))
+        pred = pred.argmax(1).squeeze().cpu().numpy()
+
+    # colour predictions
+    colours = np.zeros((256, 3), dtype=np.uint8)
+    for label in labels:
+        if label.trainId != 255:
+            colours[label.trainId] = label.color
+
+    pred = colours[pred]
+
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    Image.fromarray(pred.astype(np.uint8)).save(f"{output_dir}/epoch_{epoch:03d}.png")
+
+def make_gif(output_dir, gif_path):
+    files = sorted(Path(output_dir).glob("epoch_*.png"))
+    imageio.mimsave(gif_path, [imageio.imread(f) for f in files], duration=0.5, loop=0)

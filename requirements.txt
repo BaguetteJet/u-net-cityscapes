@@ -9,4 +9,5 @@ torch
 torchvision
 matplotlib
 seaborn
+imageio
 cityscapesscripts
