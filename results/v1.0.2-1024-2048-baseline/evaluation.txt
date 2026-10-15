@@ -1,0 +1,25 @@
+Pixel Accuracy:       90.0533%
+Mean IoU (mIoU):      39.9852%
+Mean Class Accuracy:  48.5771%
+
+Per-class results:
+-------------------------------------------------------
+road                 IoU:   93.8515% | Accuracy:   96.6901%
+sidewalk             IoU:   63.2847% | Accuracy:   75.8969%
+building             IoU:   83.4419% | Accuracy:   93.1218%
+wall                 IoU:    2.8582% | Accuracy:    2.9298%
+fence                IoU:   19.7330% | Accuracy:   23.9050%
+pole                 IoU:   37.5109% | Accuracy:   50.6358%
+traffic light        IoU:   29.9516% | Accuracy:   40.2007%
+traffic sign         IoU:   46.6574% | Accuracy:   64.2772%
+vegetation           IoU:   84.4344% | Accuracy:   92.5728%
+terrain              IoU:   44.0854% | Accuracy:   59.1264%
+sky                  IoU:   89.6218% | Accuracy:   94.6262%
+person               IoU:   53.8086% | Accuracy:   71.7291%
+rider                IoU:    0.0000% | Accuracy:    0.0000%
+car                  IoU:   79.5806% | Accuracy:   94.2094%
+truck                IoU:    0.0000% | Accuracy:    0.0000%
+bus                  IoU:    0.0006% | Accuracy:    0.0006%
+train                IoU:    0.0000% | Accuracy:    0.0000%
+motorcycle           IoU:    0.0023% | Accuracy:    0.0023%
+bicycle              IoU:   30.8957% | Accuracy:   63.0400%

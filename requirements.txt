@@ -6,6 +6,7 @@ tqdm
 pandas
 numpy
 torch
+torchinfo
 torchvision
 matplotlib
 seaborn

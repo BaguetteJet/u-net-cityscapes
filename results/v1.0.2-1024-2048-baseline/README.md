@@ -4,6 +4,16 @@
 
 GIF: `frankfurt_000001_012038_leftImg8bit.png`
 
+## Data Prep
+
+LabelIds -> TrainIds
+
+No transforms
+
+## Model
+
+Total params: 7,766,579
+
 ## Training
 
 CPU: 10700KF | RAM: 32GB | GPU: RTX 2080S 8GB
