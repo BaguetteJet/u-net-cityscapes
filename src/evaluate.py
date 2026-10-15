@@ -51,8 +51,10 @@ def metrics_from_confusion_matrix(confusion_matrix, num_classes=19):
     }
 
 @torch.no_grad()
-def evaluate(model, loader, device, num_classes=19, ignore_index=255):
+def evaluate(model, loader, device, num_classes=19, ignore_index=255, criterion=None):
     model.eval()
+
+    total_loss = 0.0
 
     # confusion matrix over the entire set
     # rows = ground-truth
@@ -64,8 +66,14 @@ def evaluate(model, loader, device, num_classes=19, ignore_index=255):
         images = images.to(device, non_blocking=True)
         truth_masks = truth_masks.to(device, non_blocking=True).long()
 
+        logits = model(images)
+
+        # optional validation loss from the same forward pass
+        if criterion is not None:
+            total_loss += criterion(logits, truth_masks).item()
+
         # get predicted class for each pixel
-        predicted_masks = model(images).argmax(dim=1)
+        predicted_masks = logits.argmax(dim=1)
 
         # exclude ignored classes
         valid_pixels = (
@@ -81,4 +89,9 @@ def evaluate(model, loader, device, num_classes=19, ignore_index=255):
         confusion_matrix += torch.bincount(encoded_class_pairs, minlength=num_classes**2).reshape(num_classes, num_classes)
 
     # evaluation metrics based on confusion matrix
-    return metrics_from_confusion_matrix(confusion_matrix, num_classes)
+    metrics = metrics_from_confusion_matrix(confusion_matrix, num_classes)
+
+    if criterion is not None:
+        metrics["loss"] = total_loss / len(loader)
+
+    return metrics

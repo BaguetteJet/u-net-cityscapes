@@ -1,8 +1,8 @@
 import os
 import random
-import torch
 from PIL import Image
 from torch.utils.data import Dataset
+from torchvision import transforms
 from torchvision.transforms import functional as TF
 from src.utils import convert_labelids_to_trainids
 
@@ -49,20 +49,6 @@ def resize(image, mask, size):
     mask = TF.resize(mask, size, interpolation=TF.InterpolationMode.NEAREST)
 
     return image, mask
-
-from torchvision import transforms
-from src.utils import mask_to_long_tensor
-
-# get transforms for images and masks
-image_transform = transforms.Compose([
-    transforms.ToTensor() # tensor scaled to [0, 1]
-])
-
-label_transform = transforms.Compose([
-    transforms.PILToTensor(), # tensor without scaling (stays 0-255)
-    # remove dummy channel dimension and cast to int64 because PyTorch's CrossEntropyLoss requires this for segmentation. [1, H, W] -> [H, W]
-    transforms.Lambda(mask_to_long_tensor) # lambda function here does not work in notebook so moved to utils.py
-])
 
 # Docs: https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html
 class CityscapesDataset(Dataset):
