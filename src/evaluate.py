@@ -1,4 +1,5 @@
 import torch
+from tqdm import tqdm
 from cityscapesscripts.helpers.labels import labels
 
 # Based on Cityscapes benchmark evaluation metrics
@@ -61,7 +62,7 @@ def evaluate(model, loader, device, num_classes=19, ignore_index=255, criterion=
     # cols = predicted
     confusion_matrix = torch.zeros(num_classes, num_classes, dtype=torch.int64, device=device)
 
-    for images, truth_masks in loader:
+    for images, truth_masks in tqdm(loader, leave=False):
         # move images to device
         images = images.to(device, non_blocking=True)
         truth_masks = truth_masks.to(device, non_blocking=True).long()

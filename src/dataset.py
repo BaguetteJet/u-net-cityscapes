@@ -4,7 +4,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision.transforms import functional as TF
-from src.utils import convert_labelids_to_trainids
+from src.utils import convert_labelids_to_trainids, mask_to_long_tensor
 
 IMAGE_SUFFIX = '_leftImg8bit.png'
 LABEL_SUFFIX = '_gtFine_labelIds.png'
@@ -16,7 +16,7 @@ image_transform = transforms.Compose([
 label_transform = transforms.Compose([
     transforms.PILToTensor(), # tensor without scaling (stays 0-255)
     # remove dummy channel dimension and cast to int64 because PyTorch's CrossEntropyLoss requires this for segmentation. [1, H, W] -> [H, W]
-    transforms.Lambda(lambda x: x.squeeze(0).long())
+    transforms.Lambda(mask_to_long_tensor)
 ])
 
 # random scale then crop to a fixed size
