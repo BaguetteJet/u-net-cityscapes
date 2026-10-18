@@ -8,6 +8,7 @@ numpy
 torch
 torchinfo
 torchvision
+segmentation-models-pytorch
 matplotlib
 seaborn
 imageio
