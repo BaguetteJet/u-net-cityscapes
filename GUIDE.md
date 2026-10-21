@@ -42,3 +42,13 @@ Optionally run [2-exploratory-data-analysis.ipynb](/notebooks/2-exploratory-data
 ## 3. Train Model
 
 Run [3-model-training.ipynb](/notebooks/3-model-training.ipynb) notebook
+
+## Cuda Guide
+
+If `device: cpu`
+```
+python -m pip uninstall -y torch torchvision
+python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+```
+
+Make sure you have cuda installed too.
