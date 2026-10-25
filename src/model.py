@@ -20,11 +20,11 @@ class DoubleConv(torch.nn.Module):
         super().__init__()
 
         # main convolution path to learn two features, almost identical to original implementation
-        # exclude bias because it is redundant with GroupNorm after
+        # exclude bias because it is redundant with BatchNorm after
         self.conv1 = torch.nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False)
-        self.gn1 = torch.nn.GroupNorm(8, out_channels)
+        self.norm1 = torch.nn.BatchNorm2d(out_channels)
         self.conv2 = torch.nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False)
-        self.gn2 = torch.nn.GroupNorm(8, out_channels)
+        self.norm2 = torch.nn.BatchNorm2d(out_channels)
         self.relu = torch.nn.ReLU(inplace=True)
 
         # optional shortcut path to carry information forward
@@ -34,7 +34,7 @@ class DoubleConv(torch.nn.Module):
             if in_channels != out_channels:
                 self.shortcut = torch.nn.Sequential(
                     torch.nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
-                    torch.nn.GroupNorm(8, out_channels)
+                    torch.nn.BatchNorm2d(out_channels)
                 )
             else:
                 # if channels already match, return the input unchanged, no new parameters
@@ -44,10 +44,10 @@ class DoubleConv(torch.nn.Module):
     def forward(self, x):
         # execute the layers defined above
         out = self.conv1(x)
-        out = self.gn1(out)
+        out = self.norm1(out)
         out = self.relu(out)
         out = self.conv2(out)
-        out = self.gn2(out)
+        out = self.norm2(out)
 
         # add the shortcut representation to the main conv path before the final relu, if residual is enabled
         if self.residual:
@@ -76,10 +76,9 @@ class Up(torch.nn.Module):
     def __init__(self, in_channels, out_channels, residual=False):
         super().__init__()
 
-        # bilinear interpolation upsamples the spatial dimensions without learnable parameters
-        self.up = torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
-        # after concatenating the skip features, the conv input has in_channels + out_channels
-        self.conv = DoubleConv(in_channels + out_channels, out_channels, residual)
+        # transposed convolution learns the upsampling weights, has learnable parameters
+        self.up = torch.nn.ConvTranspose2d(in_channels , in_channels // 2, kernel_size=2, stride=2)
+        self.conv = DoubleConv(in_channels, out_channels, residual)
 
     def forward(self, x1, x2):
         """x1 = low-res decoder features, x2 = high-res encoder features"""
@@ -120,25 +119,25 @@ class UNet(torch.nn.Module):
         self.in_channels = in_channels
         self.num_classes = num_classes
         self.base = base
-        # example input image size                           # [3, 512, 1024]
+        # example input image size                            # [3, 512, 1024]
 
         # encoder - reducing spatial dimensions and increasing feature channels
-        self.inc = DoubleConv(in_channels, base)             # [32, 512, 1024] RGB image to feature channels
-        self.down1 = Down(base,     base * 2)                # [64, 256, 512]
-        self.down2 = Down(base * 2, base * 4)                # [128, 128, 256]
-        self.down3 = Down(base * 4, base * 8, residual=True) # [256, 64, 128]
+        self.inc = DoubleConv(in_channels, base)              # [32, 512, 1024] RGB image to feature channels
+        self.down1 = Down(base,   base*2, residual=True)      # [64, 256, 512]
+        self.down2 = Down(base*2, base*4, residual=True)      # [128, 128, 256]
+        self.down3 = Down(base*4, base*8, residual=True)      # [256, 64, 128]
 
         # bottleneck - deepest layer with the smallest spatial dimensions and most feature channels
         self.down4 = Down(base * 8, base * 16, residual=True) # [512, 32, 64]
 
         # decoder - increasing spatial dimensions and reducing feature channels
-        self.up1 = Up(base * 16, base * 8, residual=True)    # [256, 64, 128]
-        self.up2 = Up(base * 8,  base * 4)                   # [128, 128, 256]
-        self.up3 = Up(base * 4,  base * 2)                   # [64, 256, 512]
-        self.up4 = Up(base * 2,  base)                       # [32, 512, 1024]
+        self.up1 = Up(base*16, base*8, residual=True)         # [256, 64, 128]
+        self.up2 = Up(base*8,  base*4, residual=True)         # [128, 128, 256]
+        self.up3 = Up(base*4,  base*2, residual=True)         # [64, 256, 512]
+        self.up4 = Up(base*2,  base)                          # [32, 512, 1024]
 
         # output layer map feature channels to 19 classes
-        self.out = OutConv(base, num_classes)                # [19, 512, 1024]
+        self.out = OutConv(base, num_classes)                 # [19, 512, 1024]
 
     def forward(self, x):
         # encoder
