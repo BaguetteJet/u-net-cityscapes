@@ -61,13 +61,12 @@ class Down(torch.nn.Module):
 
     def __init__(self, in_channels, out_channels, residual=False):
         super().__init__()
-        self.maxpool_conv = torch.nn.Sequential(
-            torch.nn.MaxPool2d(kernel_size=2),  # 2x2 max pooling to reduce spatial dimensions by half
-            DoubleConv(in_channels, out_channels, residual) # two convolution layers, optionally residual
-        )
+        
+        self.pool = torch.nn.MaxPool2d(kernel_size=2),  # 2x2 max pooling to reduce spatial dimensions by half
+        self.conv = DoubleConv(in_channels, out_channels, residual) # two convolution layers, optionally residual
 
     def forward(self, x):
-        return self.maxpool_conv(x)
+        return self.conv(self.pool(x))
 
 
 class Up(torch.nn.Module):
