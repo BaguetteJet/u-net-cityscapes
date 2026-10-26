@@ -62,7 +62,7 @@ class Down(torch.nn.Module):
     def __init__(self, in_channels, out_channels, residual=False):
         super().__init__()
         
-        self.pool = torch.nn.MaxPool2d(kernel_size=2),  # 2x2 max pooling to reduce spatial dimensions by half
+        self.pool = torch.nn.MaxPool2d(kernel_size=2)  # 2x2 max pooling to reduce spatial dimensions by half
         self.conv = DoubleConv(in_channels, out_channels, residual) # two convolution layers, optionally residual
 
     def forward(self, x):
