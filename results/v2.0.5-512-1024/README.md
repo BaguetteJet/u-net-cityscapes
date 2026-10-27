@@ -1,4 +1,4 @@
-# v2.0.0-512-1024
+# v2.0.5-512-1024
 
 ![training-gif](training.gif)
 
