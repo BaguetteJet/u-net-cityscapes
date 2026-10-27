@@ -70,7 +70,7 @@ class Down(torch.nn.Module):
 
 
 class Up(torch.nn.Module):
-    """Decoder upsampling with bilinear interpolation then double conv"""
+    """Decoder upsampling with double conv and skip connections"""
 
     def __init__(self, in_channels, out_channels, residual=False):
         super().__init__()
