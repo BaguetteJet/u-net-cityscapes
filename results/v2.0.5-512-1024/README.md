@@ -26,7 +26,7 @@ CPU: 14700KF | RAM: 32GB | GPU: RTX 4080S 16GB
 
 Trained on 512 x 1024 crops for 130 epochs
 
-120 EPOCHS = **6hrs 30mins**      
+130 EPOCHS = **6hrs 30mins**      
 
 - CROP_SIZE = (512, 1024)
 - CROP_SCALE = (0.5, 2.0)
